@@ -22,7 +22,7 @@ def genall(directory):
             f.write(b'0' * num_chars)
 
 
-def copy_test(from_directory, to_directory):
+def copy_test(from_directory, to_directory, repeat):
     files = ["1M_file", "10M_file", "100M_file", "500M_file", "1G_file"]
     file = open(str(from_directory) + "write.log","w+")
     file.close()
@@ -32,7 +32,7 @@ def copy_test(from_directory, to_directory):
         try:
             file = open(str(from_directory) + "write.log","a+")
             file.write(str(f) + " 100 mérés eredménye, " + str(from_directory) + " -> " + str(to_directory) + "\n")
-            for x in range(1,101):
+            for x in range(1, repeat + 1):
                 start = datetime.datetime.now()
                 shutil.copy(from_directory + str(f), to_directory + str(f) + str(x))
                 end = datetime.datetime.now()
@@ -40,7 +40,7 @@ def copy_test(from_directory, to_directory):
                 delta = str(end-start)
                 delta = delta.split(':')
                 sum_times = sum_times + float(delta[2])
-                if x == 100:
+                if x == repeat:
                     average = sum_times / x
                     file.write("A mérések összes ideje: " + str(sum_times) + "\n")
                     file.write("A mérések átlaga: " + str(average) + "\n\n")
@@ -60,6 +60,8 @@ def main():
     print("Ha Windows akkor két '\\' jelet illesz mögé.")
     usb_location = input("USB Lokáció: ")
     directory = input("PC Lokáció: ")
+    repeat = input("Hány ismétlést szeretnél / teszt? Csak számot adj meg: ")
+    repeat = int(repeat)
     os_end = ""
 
     if os_in.upper() == "W" or os_in.upper() == "WINDOWS":
@@ -80,8 +82,8 @@ def main():
     print("Tesztek indítása ...")
     print("Most dőlj hátra, ez sokáig fog tartani!")
 
-    copy_test(directory + "read" + os_end, usb_location + "copy" + os_end)
-    copy_test(usb_location + "read" + os_end, directory + "copy" + os_end)
+    copy_test(directory + "read" + os_end, usb_location + "copy" + os_end, repeat)
+    copy_test(usb_location + "read" + os_end, directory + "copy" + os_end, repeat)
 
 
 if __name__ == '__main__':
